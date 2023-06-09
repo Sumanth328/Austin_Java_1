@@ -1,0 +1,59 @@
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
+public class ApparelStore {
+
+    public static void main(String[] args) {
+        // Example usage
+        double totalPrice = calculateTotalPrice("online", "women", "accessories", "Chanel", 200.0, false);
+        System.out.println("Total Price: $" + totalPrice);
+    }
+
+    public static double calculateTotalPrice(String clientType, String gender, String category, String brand, double purchaseAmount, boolean isNewUser) {
+        double totalPrice = purchaseAmount;
+        double discount = 0.0;
+
+        if (clientType.equals("online")) {
+            if (category.equals("accessories")) {
+                if (brand.equals("Chanel") || brand.equals("Louis Vuitton") || brand.equals("Ck")) {
+                    discount = purchaseAmount * 0.1; // 10% discount
+                }
+                if (isNewUser) {
+                    LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+                    LocalDate registrationDate = LocalDate.of(2023, 1, 1); // Replace with actual registration date
+                    if (registrationDate.isAfter(thirtyDaysAgo)) {
+                        discount += purchaseAmount * 0.1; // Additional 10% off for new users
+                    }
+                }
+            } else if (category.equals("clothes")) {
+                if (purchaseAmount > 150.0) {
+                    discount = purchaseAmount * 0.1; // 10% discount
+                }
+                if (brand.equals("Armani") || brand.equals("Balenciaga")) {
+                    discount = 0.0; // No discount on Armani or Balenciaga
+                }
+            }
+            if (!isNewUser && purchaseAmount > 150.0) {
+                discount += 10.0; // Existing customers get $10 off for purchases above $150
+            }
+        } else if (clientType.equals("instore")) {
+            if (purchaseAmount >= 100.0) {
+                if (category.equals("women") || category.equals("kids")) {
+                    if (purchaseAmount > 250.0) {
+                        discount = purchaseAmount * 0.1; // Additional discount if purchase amount > $250
+                    }
+                }
+                if (purchaseAmount > 150.0) {
+                    discount += 25.0; // $25 gift card on purchases above $150
+                }
+            }
+        }
+
+        double cashback = totalPrice * 0.1; // 10% cash-back voucher
+        totalPrice -= discount;
+        totalPrice -= cashback;
+
+        return totalPrice;
+    }
+}
